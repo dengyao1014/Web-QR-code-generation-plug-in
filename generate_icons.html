@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Generate Extension Icons</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        .preview {
+            margin: 20px 0;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+        }
+        .icon-container {
+            text-align: center;
+        }
+        canvas {
+            border: 1px solid #ccc;
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Extension Icons Preview</h2>
+    <div class="preview"></div>
+    
+    <h3>Download Icons:</h3>
+    <button onclick="downloadIcon(16)">Download icon16.png</button>
+    <button onclick="downloadIcon(32)">Download icon32.png</button>
+    <button onclick="downloadIcon(48)">Download icon48.png</button>
+    <button onclick="downloadIcon(128)">Download icon128.png</button>
+    <button onclick="downloadPromoImage()">Download Promo Image (440x280)</button>
+
+    <script>
+        function createIcon(size, isPromo = false) {
+            const canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            const ctx = canvas.getContext('2d');
+            
+            // 渐变背景
+            const gradient = ctx.createLinearGradient(0, 0, size, size);
+            gradient.addColorStop(0, '#4285f4');
+            gradient.addColorStop(1, '#34a853');
+            ctx.fillStyle = gradient;
+            
+            if (isPromo) {
+                // 宣传图特殊处理
+                ctx.fillRect(0, 0, size, size);
+                
+                // 添加文字
+                ctx.fillStyle = 'white';
+                ctx.font = '24px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('Web QR Code', size/2, size/2 - 20);
+                ctx.fillText('Generator', size/2, size/2 + 20);
+                
+                return canvas;
+            }
+
+            // 普通图标
+            ctx.fillRect(0, 0, size, size);
+            
+            // 白色QR码样式
+            ctx.fillStyle = 'white';
+            const padding = size * 0.2;
+            const qrSize = size * 0.6;
+            
+            // 绘制QR码角落和中心方块
+            ctx.fillRect(padding, padding, qrSize, qrSize);
+            
+            // QR码样式细节
+            ctx.fillStyle = gradient;
+            const blockSize = qrSize / 4;
+            [[1,1], [2,2], [1,3]].forEach(([x,y]) => {
+                ctx.fillRect(
+                    padding + x * blockSize,
+                    padding + y * blockSize,
+                    blockSize * 0.8,
+                    blockSize * 0.8
+                );
+            });
+            
+            return canvas;
+        }
+
+        function downloadIcon(size) {
+            const canvas = createIcon(size);
+            const link = document.createElement('a');
+            link.download = `icon${size}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        function downloadPromoImage() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 440;
+            canvas.height = 280;
+            const ctx = canvas.getContext('2d');
+
+            // 背景
+            const gradient = ctx.createLinearGradient(0, 0, 440, 280);
+            gradient.addColorStop(0, '#4285f4');
+            gradient.addColorStop(1, '#34a853');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, 440, 280);
+
+            // 添加图标
+            const iconCanvas = createIcon(120);
+            ctx.drawImage(iconCanvas, 60, 80);
+
+            // 添加文字
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 36px Arial';
+            ctx.textAlign = 'left';
+            ctx.fillText('Web QR Code', 220, 120);
+            ctx.font = 'bold 32px Arial';
+            ctx.fillText('Generator', 220, 170);
+
+            // 下载
+            const link = document.createElement('a');
+            link.download = 'promo.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        // 显示预览
+        [16, 32, 48, 128].forEach(size => {
+            const canvas = createIcon(size);
+            const container = document.createElement('div');
+            container.className = 'icon-container';
+            container.appendChild(canvas);
+            container.appendChild(document.createTextNode(`${size}x${size}`));
+            document.querySelector('.preview').appendChild(container);
+        });
+    </script>
+</body>
+</html> 

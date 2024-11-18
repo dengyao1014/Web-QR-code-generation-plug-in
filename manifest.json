@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "Web QR Code Generator",
+  "name_i18n": {
+    "zh": "网页二维码生成器"
+  },
+  "version": "1.0.0",
+  "description": "Generate QR code for current webpage with website logo and information",
+  "description_i18n": {
+    "zh": "便捷的网页二维码生成工具，一键生成当前网页的二维码，支持多语言"
+  },
+  "permissions": [
+    "activeTab"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "css": ["styles.css"]
+    }
+  ],
+  "icons": {
+    "16": "icon16.png",
+    "32": "icon32.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  },
+  "author": "your-email@example.com",
+  "homepage_url": "https://your-website.com/qr-generator"
+} 
