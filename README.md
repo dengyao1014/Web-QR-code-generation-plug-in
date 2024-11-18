@@ -1,0 +1,1 @@
+# Web-QR-code-generation-plug-in
